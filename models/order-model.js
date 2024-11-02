@@ -1,12 +1,8 @@
+// models/order-model.js
+
 import mongoose from "mongoose";
 
-const { Schema } = mongoose;
-
-const orderSchema = new Schema({
-    name: {
-        type: String,
-        required: [true, "Product name is required"],
-    },
+const orderItemSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
@@ -17,19 +13,31 @@ const orderSchema = new Schema({
         required: true,
         min: [1, "Quantity must be at least 1"]
     },
+    price: {
+        type: Number,
+        required: true
+    },
     total: {
         type: Number,
-        required: [true, "Total amount is required"]
+        required: true
+    }
+});
+
+const orderSchema = new mongoose.Schema({
+    orderItems: [orderItemSchema],
+    total: {
+        type: Number,
+        required: true
     },
     status: {
         type: String,
-        required: [true, "Order status is required"],
+        required: true,
         enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
         default: "pending"
     },
     statusPayment: {
         type: String,
-        required: [true, "Payment status is required"],
+        required: true,
         enum: ["unpaid", "paid"],
         default: "unpaid"
     },
@@ -38,26 +46,11 @@ const orderSchema = new Schema({
         ref: 'User',
         required: true
     },
-    firstName: {
-        type: String,
-        required: [true, "First name is required"]
-    },
-    lastName: {
-        type: String,
-        required: [true, "Last name is required"]
-    },
-    phone: {
-        type: String,
-        required: [true, "Phone number is required"]
-    },
-    email: {
-        type: String,
-        required: [true, "Email is required"]
-    },
-    address: {
-        type: String,
-        required: [true, "Shipping address is required"]
-    }
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    address: { type: String, required: true }
 });
 
 const Order = mongoose.model("Order", orderSchema);

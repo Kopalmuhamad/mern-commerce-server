@@ -40,7 +40,10 @@ cloudinary.config({
 app.use(express.json());
 app.use(helmet());
 app.use(ExpressMongoSanitize());
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(bodyParser.json());

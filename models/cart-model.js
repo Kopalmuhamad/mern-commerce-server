@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Product from "./product-model.js"; // Pastikan path ke model Product sudah benar
+import Product from "./product-model.js";
 
 const itemSchema = new mongoose.Schema({
     product: {
@@ -15,18 +15,17 @@ const itemSchema = new mongoose.Schema({
     totalPrice: {
         type: Number,
         required: true,
-        default: 0 // Default sementara, akan dihitung ulang pada middleware
+        default: 0
     }
 }, { timestamps: true });
 
-// Middleware untuk menghitung totalPrice berdasarkan quantity dan harga produk
 itemSchema.pre("save", async function (next) {
     if (this.isModified("quantity") || this.isNew) {
         const product = await Product.findById(this.product);
         if (!product) {
             throw new Error("Product not found");
         }
-        this.totalPrice = this.quantity * product.price; // Menghitung totalPrice
+        this.totalPrice = this.quantity * product.price;
     }
     next();
 });

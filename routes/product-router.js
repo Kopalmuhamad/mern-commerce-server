@@ -6,7 +6,7 @@ import { upload } from "../utils/upload-file-handler.js"
 const router = express.Router()
 
 router.post("/product", protectedMiddleware, adminMiddleware, createProduct)
-router.get("/products", getAllProduct)
+router.get("/product", getAllProduct)
 router.get("/product/:id", getDetailProduct)
 router.put("/product/:id", protectedMiddleware, adminMiddleware, updateProduct)
 router.delete("/product/:id", protectedMiddleware, adminMiddleware, deleteProduct)

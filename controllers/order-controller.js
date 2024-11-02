@@ -14,43 +14,40 @@ export const createOrder = asyncHandler(async (req, res) => {
     let total = 0;
     const orderItems = [];
 
-    for (const cart of cartItem) {
-        const productData = await Product.findById(cart.product);
-        if (!productData) {
+    for (const item of cartItem) {
+        const product = await Product.findById(item.product);
+        if (!product) {
             res.status(404);
             throw new Error("Product not found");
         }
 
-        const { name, price, _id } = productData;
         const orderItem = {
-            quantity: cart.quantity,
-            name: name,
-            price: price,
-            product: _id,
-            total: price * cart.quantity
+            product: product._id,
+            quantity: item.quantity,
+            price: product.price,
+            total: product.price * item.quantity
         };
 
         orderItems.push(orderItem);
-        total += price * cart.quantity;
+        total += orderItem.total;
     }
 
     const order = await Order.create({
-        email,
-        firstName,
-        lastName,
-        phone,
-        address,
+        orderItems,
         total,
         status: "pending",
         statusPayment: "unpaid",
         user: req.user._id,
-        ...orderItems[0] // mengisi item pertama dari orderItems ke skema order
+        firstName,
+        lastName,
+        phone,
+        email,
+        address
     });
 
-    return res.status(201).json({
+    res.status(201).json({
         message: "Order created successfully",
-        order,
-        total
+        data: order
     });
 });
 
@@ -58,8 +55,8 @@ export const getAllOrder = asyncHandler(async (req, res) => {
     const orders = await Order.find().populate("product", "name images price");
 
     return res.status(200).json({
+        message: "Retrieved all orders",
         data: orders,
-        message: "Retrieved all orders"
     });
 });
 
@@ -72,19 +69,20 @@ export const getDetailOrder = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json({
+        message: "Retrieved order details",
         data: order,
-        message: "Retrieved order details"
     });
 });
 
 export const currentUserOrder = asyncHandler(async (req, res) => {
-    const orders = await Order.find({ user: req.user._id }).populate("product", "name images price");
+    const orders = await Order.find({ user: req.user._id }).populate("orderItems.product", "name images price");
 
-    return res.status(200).json({
+    res.status(200).json({
+        message: "Retrieved current user orders",
         data: orders,
-        message: "Retrieved current user orders"
     });
 });
+
 
 export const updateOrder = asyncHandler(async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -100,7 +98,7 @@ export const updateOrder = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
         message: "Order updated successfully",
-        data: updatedOrder
+        data: updatedOrder,
     });
 });
 
@@ -113,7 +111,7 @@ export const deleteOrder = asyncHandler(async (req, res) => {
     }
 
     return res.status(200).json({
+        data: deletedOrder,
         message: "Order deleted successfully",
-        data: deletedOrder
     });
 });
