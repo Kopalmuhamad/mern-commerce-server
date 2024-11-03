@@ -12,7 +12,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import authRouter from "./routes/auth-router.js";
 import productRouter from "./routes/product-router.js";
 import orderRouter from "./routes/order-router.js";
-import cartRouter from "./routes/cart-router.js";
 
 // Error Handler
 import { notFound, errorHandler } from "./middlewares/error-handler.js";
@@ -53,7 +52,6 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", productRouter);
-app.use("/api/v1", cartRouter);
 app.use("/api/v1", orderRouter);
 
 app.use(notFound);
