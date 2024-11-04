@@ -60,6 +60,11 @@ export const getAllProduct = asyncHandler(async (req, res) => {
     const products = await query
     const totalPage = Math.ceil(countProduct / limit)
 
+    if (!products) {
+        res.status(404)
+        throw new Error("Products not found")
+    }
+
     res.json({
         message: "Get all products",
         data: products,

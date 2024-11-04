@@ -21,15 +21,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch((err) => console.log(err));
-
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
-
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -46,7 +37,6 @@ app.use(cors({
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(bodyParser.json());
-
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
@@ -56,3 +46,11 @@ app.use("/api/v1", orderRouter);
 
 app.use(notFound);
 app.use(errorHandler);
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
+
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.log(err));
