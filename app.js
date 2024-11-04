@@ -19,7 +19,7 @@ import { notFound, errorHandler } from "./middlewares/error-handler.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT;
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("Connected to MongoDB"))
